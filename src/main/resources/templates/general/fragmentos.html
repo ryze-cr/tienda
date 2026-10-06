@@ -61,6 +61,7 @@
                                     <li><a class="dropdown-item" th:href="@{/(lang=en)}">English</a></li>
                                     <li><a class="dropdown-item" th:href="@{/(lang=fr)}">Française</a></li>
                                     <li><a class="dropdown-item" th:href="@{/(lang=pt)}">Portugaise</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/(lang=it)}">Italiano</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -143,4 +144,45 @@
 
     </div>
 
+</section>
+
+<!-- Fragmento #5: ventana de confirmación para eliminar categorías o productos -->
+<section th:fragment="confirmarEliminar(urlEliminar, nombreId)">
+    <div class="modal fade" id="confirmModal"
+         tabindex="-1" aria-labelledby="confirmModalTitulo"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="${urlEliminar}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalTitulo">
+                            Confirmar eliminación
+                        </h5>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" id="modalId"
+                               th:name="${nombreId}">
+                        <p>
+                            ¿Deseas eliminar
+                            <strong id="modalDescripcion"></strong>?
+                        </p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-danger">
+                            Eliminar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </section>
