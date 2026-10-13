@@ -31,9 +31,9 @@
                         <input type="hidden" id="productoId" name="idProducto"/>
                         <input type="hidden" id="productoRutaImagen" name="rutaImagen"/>
                         <div class="mb-3">
-                            <label for="productoProducto">[[#{producto.producto}]]</label>
-                            <select id="productoIdProducto" name="idProducto" class="form-select" required>
-                                <option th:each="c : ${productos}" th:value="${c.idProducto}">
+                            <label for="productoCategoria">[[#{producto.categoria}]]</label>
+                            <select id="productoIdCategoria" name="categoria.idCategoria" class="form-select" required>
+                                <option th:each="c : ${categorias}" th:value="${c.idCategoria}">
                                     [[${c.descripcion}]]
                                 </option>
                             </select>
@@ -95,7 +95,7 @@
                                     <th>[[#{producto.existencias}]]</th>
                                     <th>[[#{producto.total}]]</th>
                                     <th>[[#{producto.imagen}]]</th>
-                                    <th>[[#{producto.producto}]]</th>
+                                    <th>[[#{producto.categoria}]]</th>
                                     <th>[[#{producto.activo}]]</th>
                                     <th></th>
                                 </tr>
@@ -103,7 +103,7 @@
                             <tbody>
                                 <tr th:each="p : ${productos}">
                                     <td>[[${p.idProducto}]]</td>
-                                    <td>[[${p.descripcion}]]</td>
+                                    <td>[[${p.categoria.descripcion}]]</td>
                                     <td class="text-end">[[${#numbers.formatCurrency(p.precio)}]]</td>
                                     <td class="text-center">[[${p.existencias}]]</td>
                                     <td class="text-end">[[${#numbers.formatCurrency(p.precio*p.existencias)}]]</td>
@@ -111,7 +111,7 @@
                                              th:src="${p.rutaImagen}"
                                              alt="Imagen de producto"
                                              height="75"/></td>
-                                    <td>[[${p.idProducto}]]</td>
+                                    <td th:text="${p.categoria != null ? p.categoria.descripcion : ''}"></td>
                                     <td th:text="${p.activo} ? 'Activa':'Inactiva'"></td>
                                     <td sec:authorize="hasRole('ROLE_ADMIN')">
                                         <button type="button" class="btn btn-danger"
@@ -128,6 +128,7 @@
                                                 th:data-titulo="#{accion.actualizar}"
                                                 th:data-id="${p.idProducto}"
                                                 th:data-producto-id="${p.idProducto}"
+                                                th:data-categoria-id="${p.categoria != null ? p.categoria.idCategoria : ''}"
                                                 th:data-descripcion="${p.descripcion}"
                                                 th:data-detalle="${p.detalle}"
                                                 th:data-precio="${p.precio}"
