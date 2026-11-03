@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-    <head th:replace="~{general/plantilla :: head}"/>
+    <head th:replace="~{general/fragmentos :: head}"/>
 
     <body>
         <!-- fragmento 1 para Agregar producto en ventana modal -->
@@ -28,6 +28,14 @@
 
         <!-- fragmento 2 para el listado de tarjetas de productos -->
         <section th:fragment="tarjetas" class="container py-4">
+            <div th:if="${consultaAmpliada}" class="alert alert-info" role="status">
+                <strong>[[#{consultas.ampliada.resultados}]]</strong>
+                <span th:text="${#lists.size(productos)}"></span>
+                <span class="ms-2">[[#{consultas.ampliada.orden}]]</span>
+            </div>
+            <p th:if="${consultaAmpliada == true and #lists.isEmpty(productos)}" class="text-center py-3">
+                [[#{consultas.ampliada.sinResultados}]]
+            </p>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
                 <div th:each="p : ${productos}" class="col">
                     <div class="card h-100 shadow-sm">
@@ -63,11 +71,11 @@
             </div>
         </section>
 
-        <section th:fragment='consultas' class='row row-cols-4 p-2'>
+        <section th:fragment='consultas' class='row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 p-2 m-0'>
             <div th:replace="~{consultas/fragmentos :: formConsulta('primary',#{consultas.derivadas},'/consultas/consultaDerivada')}"/>
             <div th:replace="~{consultas/fragmentos :: formConsulta('warning',#{consultas.jpql},'/consultas/consultaJPQL')}"/>
             <div th:replace="~{consultas/fragmentos :: formConsulta('success',#{consultas.sql},'/consultas/consultaSQL')}"/>
-            <div class='card'><p>Acá va su Práctica #2</p></div>
+            <div th:replace="~{consultas/fragmentos :: formConsultaAmpliada}"/>
         </section>
 
         <div th:fragment='formConsulta(colorForm, textoForm, urlForm)'>
@@ -91,6 +99,45 @@
                     <div class="card-footer text-center">
                         <button type='submit' class='btn text-white' th:classappend="${'btn-'+colorForm}">
                             <i class='fa-solid fa-magnifying-glass'></i> [[${textoForm}]]
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- Practica 2 -->
+        <div th:fragment="formConsultaAmpliada">
+            <form method="post" th:action="@{/consultas/consultaAmpliada}">
+                <div class="card p-2">
+                    <div class="card-header text-center text-white bg-secondary">
+                        <h5>[[#{consultas.ampliada.titulo}]]</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted">[[#{consultas.ampliada.descripcion}]]</p>
+                        <div th:if="${errorConsulta}" class="alert alert-danger" role="alert">
+                            [[#{consultas.ampliada.error}]]
+                        </div>
+                        <div class="mb-3">
+                            <label for="idCategoria">[[#{consultas.ampliada.categoria}]]</label>
+                            <select id="idCategoria" name="idCategoria" class="form-select">
+                                <option value="">[[#{consultas.todas}]]</option>
+                                <option th:each="c : ${categorias}" th:value="${c.idCategoria}"
+                                        th:selected="${c.idCategoria == idCategoria}" th:text="${c.descripcion}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="precioInfAmpliada">[[#{consultas.precio.inferior}]]</label>
+                            <input id="precioInfAmpliada" name="precioInf" th:value="${precioInf}" type="number"
+                                   class="form-control" min="0" step="0.01" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="precioSupAmpliada">[[#{consultas.precio.superior}]]</label>
+                            <input id="precioSupAmpliada" name="precioSup" th:value="${precioSup}" type="number"
+                                   class="form-control" min="0" step="0.01" required/>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="fa-solid fa-magnifying-glass"></i> [[#{consultas.ampliada.buscar}]]
                         </button>
                     </div>
                 </div>

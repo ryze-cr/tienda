@@ -1,6 +1,10 @@
 package com.tienda.controller;
 
 import com.tienda.service.ProductoService;
+import com.tienda.service.CategoriaService;
+import com.tienda.domain.Categoria;
+import java.util.List;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import java.math.BigDecimal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,8 +19,37 @@ public class ConsultaController {
 
     private final ProductoService productoService;
 
-    public ConsultaController(ProductoService productoService) {
+    private final CategoriaService categoriaService;
+
+    public ConsultaController(ProductoService productoService, CategoriaService categoriaService) {
         this.productoService = productoService;
+        this.categoriaService = categoriaService;
+    }
+
+    // Disponibles tambien al ejecutar cualquiera de las tres consultas de clase.
+    @ModelAttribute("categorias")
+    public List<Categoria> categorias() {
+        return categoriaService.getCategorias(true);
+    }
+
+    @PostMapping("/consultaAmpliada")
+    public String consultaAmpliada(@RequestParam(required = false) Integer idCategoria,
+            @RequestParam(required = false) BigDecimal precioInf,
+            @RequestParam(required = false) BigDecimal precioSup, Model model) {
+        model.addAttribute("idCategoria", idCategoria);
+        model.addAttribute("precioInf", precioInf);
+        model.addAttribute("precioSup", precioSup);
+        if (precioInf == null || precioSup == null || precioInf.signum() < 0
+                || precioSup.signum() < 0 || precioInf.compareTo(precioSup) > 0
+                || (idCategoria != null && idCategoria <= 0)) {
+            model.addAttribute("errorConsulta", true);
+            model.addAttribute("productos", List.of());
+            return "/consultas/listado";
+        }
+        var productos = productoService.consultaAmpliada(idCategoria, precioInf, precioSup);
+        model.addAttribute("productos", productos);
+        model.addAttribute("consultaAmpliada", true);
+        return "/consultas/listado";
     }
 
     @GetMapping("/listado")
