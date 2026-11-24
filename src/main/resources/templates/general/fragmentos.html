@@ -45,9 +45,7 @@
                                     [[#{plantilla.seguridad}]]
                                 </a>
                                 <ul class="dropdown-menu">                                            
-                                    <li><a class="dropdown-item" th:href="@{/role/listado}">[[#{plantilla.troles}]]</a></li>
                                     <li><a class="dropdown-item" th:href="@{/usuario_rol/mantenimiento}">[[#{plantilla.permisos}]]</a></li>
-                                    <li><a class="dropdown-item" th:href="@{/ruta/listado}">[[#{plantilla.rutas}]]</a></li>
                                 </ul>
                             </li>
                             <li><a class="dropdown-item" th:href="@{/constante/listado}">[[#{plantilla.constantes}]]</a></li>
@@ -80,8 +78,8 @@
                 <ul class="navbar-nav" sec:authorize="isAuthenticated()">
                     <li class="nav-item my-auto">
                         <a class="nav-link">
-                           <img th:src="@{${session.imagenUsuario}}" alt="..."
-                                height="40" class="rounded-circle"/>
+                            <img th:src="@{${session.imagenUsuario}}" alt="..."
+                                 height="40" class="rounded-circle"/>
                             <span sec:authentication="name" class="ms-1"></span>
                         </a>
                     </li>
